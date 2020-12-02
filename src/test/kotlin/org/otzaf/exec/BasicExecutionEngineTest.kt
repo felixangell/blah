@@ -8,6 +8,21 @@ import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvSource
 import org.otzaf.exec.instr.*
 
+/*
+    todo list:
+    - negation
+    - bit shift left, right
+    - array instructions? store, load, indexing
+    - byte instructions
+    - longs
+    - doubles
+    - conversion of int to double and vice versa?
+    - goto address
+    - registers?
+    - increment, decrement
+    - ifeq, ifne, iflt, ifle, ifgt, ifge - if<cond> is true then jump to given addr (param1)
+    -
+ */
 internal class BasicExecutionEngineTest {
     lateinit var eng: BasicExecutionEngine
 
