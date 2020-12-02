@@ -4,6 +4,8 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.CsvSource
 import org.otzaf.exec.instr.*
 
 internal class BasicExecutionEngineTest {
@@ -21,10 +23,30 @@ internal class BasicExecutionEngineTest {
         assertThat(expected, equalTo(eng.context.popInt()))
     }
 
+    @ParameterizedTest
+    @CsvSource(
+        "30,8,1",
+        "8,30,-1",
+        "30,30,0"
+    )
+    fun `greater than instruction pushes true on the stack`(a: Int, b: Int, expected: Int) {
+        val program = arrayOf(
+            StoreI(a),
+            StoreI(b),
+            CmpI()
+        )
+
+        eng.executeProgram(program)
+
+        assertThat(eng.context.popInt(), equalTo(expected))
+    }
+
     @Test
-    fun `multiple arithemtic instructions can be used in combination`() {
-        val a1 = 6; val a2 = 8
-        val b1 = 5; val b2 = 5;
+    fun `multiple arithmetic instructions can be used in combination`() {
+        val a1 = 6
+        val a2 = 8
+        val b1 = 5
+        val b2 = 5
 
         val program = arrayOf(
             StoreI(a1),
@@ -40,9 +62,11 @@ internal class BasicExecutionEngineTest {
 
         eng.executeProgram(program)
 
-        assertThat(eng.context.popInt(), equalTo(
-            (a1 * a2) - (b1 * b2)
-        ))
+        assertThat(
+            eng.context.popInt(), equalTo(
+                (a1 * a2) - (b1 * b2)
+            )
+        )
     }
 
     @Test
