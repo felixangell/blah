@@ -77,6 +77,15 @@ class SubI : Instruction {
     }
 }
 
+class RemI : Instruction {
+    override fun execute(context: ExecutionEngineContext) {
+        val b = context.popInt()
+        val a = context.popInt()
+        context.pushInt(a % b)
+    }
+
+}
+
 class DivI : Instruction {
     override fun execute(context: ExecutionEngineContext) {
         val b = context.popInt()

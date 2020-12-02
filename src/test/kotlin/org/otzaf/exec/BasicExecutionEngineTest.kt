@@ -141,6 +141,26 @@ internal class BasicExecutionEngineTest {
     }
 
     @Test
+    fun `remainder instructions produces the correct result`() {
+        // given a basic program
+        val a = 8
+        val b = 3
+
+        val program: Array<Instruction> = arrayOf(
+            StoreI(a),
+            StoreI(b),
+            RemI()
+        )
+
+        // when we execute
+        eng.executeProgram(program)
+
+        // then the last value on the stack is the result
+        val expected = a % b
+        assertThat(eng.context.popInt(), equalTo(expected))
+    }
+
+    @Test
     fun `division instructions produces the correct result`() {
         // given a basic program
         val a = 8
