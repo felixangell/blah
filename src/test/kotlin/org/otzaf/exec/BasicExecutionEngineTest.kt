@@ -26,6 +26,40 @@ internal class BasicExecutionEngineTest {
     @ParameterizedTest
     @CsvSource(
         "0,0,0",
+        "0,1,1",
+        "1,0,1",
+        "1,1,0"
+    )
+    fun `xor boolean operator`(a: Int, b: Int, expected: Int) {
+        val program = arrayOf(
+            StoreI(a),
+            StoreI(b),
+            XorI()
+        )
+        eng.executeProgram(program)
+        assertThat(eng.context.popInt(), equalTo(expected))
+    }
+
+    @ParameterizedTest
+    @CsvSource(
+        "0,0,0",
+        "0,1,1",
+        "1,0,1",
+        "1,1,1"
+    )
+    fun `or boolean operator`(a: Int, b: Int, expected: Int) {
+        val program = arrayOf(
+            StoreI(a),
+            StoreI(b),
+            OrI()
+        )
+        eng.executeProgram(program)
+        assertThat(eng.context.popInt(), equalTo(expected))
+    }
+
+    @ParameterizedTest
+    @CsvSource(
+        "0,0,0",
         "0,1,0",
         "1,0,0",
         "1,1,1"

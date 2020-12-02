@@ -2,6 +2,8 @@ package org.otzaf.exec.instr
 
 import org.otzaf.exec.ExecutionEngineContext
 import kotlin.experimental.and
+import kotlin.experimental.or
+import kotlin.experimental.xor
 
 interface Instruction {
     fun execute(context: ExecutionEngineContext)
@@ -24,6 +26,22 @@ class CmpI : Instruction {
             else -> throw RuntimeException("a is not >, ==, < than b")
         }
         context.pushInt(result)
+    }
+}
+
+class XorI : Instruction {
+    override fun execute(context: ExecutionEngineContext) {
+        val b = context.popInt()
+        val a = context.popInt()
+        context.pushInt(a.toByte().xor(b.toByte()).toInt())
+    }
+}
+
+class OrI : Instruction {
+    override fun execute(context: ExecutionEngineContext) {
+        val b = context.popInt()
+        val a = context.popInt()
+        context.pushInt(a.toByte().or(b.toByte()).toInt())
     }
 }
 
