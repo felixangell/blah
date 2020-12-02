@@ -6,8 +6,6 @@ import org.hamcrest.Matchers.not
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.otzaf.exec.ExecutionEngineContext
-import java.nio.ByteBuffer
-import java.nio.ByteOrder
 
 internal class StackInstructionsIntegrationTest {
     lateinit var context: ExecutionEngineContext
@@ -39,14 +37,4 @@ internal class StackInstructionsIntegrationTest {
         StoreI(expected).execute(context)
         assertThat(context.popInt(), equalTo(expected))
     }
-}
-
-fun ExecutionEngineContext.popInt(): Int {
-    val bytes = ByteArray(4)
-    val buff = ByteBuffer.wrap(bytes).order(ByteOrder.BIG_ENDIAN)
-    repeat((1..4).count()) { buff.put(this.pop()) }
-    // we need to reverse because we pop the bytes off
-    // and need to put them back into the store order
-    bytes.reverse()
-    return buff.getInt(0)
 }
