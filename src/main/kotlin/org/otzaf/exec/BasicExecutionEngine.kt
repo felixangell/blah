@@ -23,6 +23,8 @@ class ExecutionEngineContext {
         sp--
         return v
     }
+
+    fun empty(): Boolean = sp == -1
 }
 
 class BasicExecutionEngine : ExecutionEngine {
