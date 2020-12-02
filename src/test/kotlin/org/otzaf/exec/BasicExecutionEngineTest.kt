@@ -22,6 +22,30 @@ internal class BasicExecutionEngineTest {
     }
 
     @Test
+    fun `multiple arithemtic instructions can be used in combination`() {
+        val a1 = 6; val a2 = 8
+        val b1 = 5; val b2 = 5;
+
+        val program = arrayOf(
+            StoreI(a1),
+            StoreI(a2),
+            MulI(), // 6 * 8 = 48
+
+            StoreI(b1),
+            StoreI(b2),
+            MulI(), // 5 * 5 = 25
+
+            SubI() // 48 - 25 = 23
+        )
+
+        eng.executeProgram(program)
+
+        assertThat(eng.context.popInt(), equalTo(
+            (a1 * a2) - (b1 * b2)
+        ))
+    }
+
+    @Test
     fun `multiplication instructions produces the correct result`() {
         // given a basic program
         val a = 8
