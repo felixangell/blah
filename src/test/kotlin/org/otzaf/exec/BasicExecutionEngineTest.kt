@@ -2,8 +2,10 @@ package org.otzaf.exec
 
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
+import org.hamcrest.Matchers.not
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvSource
 import org.otzaf.exec.instr.*
@@ -232,6 +234,36 @@ internal class BasicExecutionEngineTest {
 
         // then the last value on the stack is the result
         assertThat(eng.context.popInt(), equalTo(a + b))
+    }
+
+    @Test
+    fun `stack cannot handle many megabytes of values`() {
+        // index oob is thrown
+        assertThrows<IndexOutOfBoundsException> {
+            // given a lot of instructions
+            // (32,767 * 4) * 16 => ~2MB of integers
+            val instructions = (1..(Short.MAX_VALUE * 16)).map { StoreI(it) }
+
+            // when we execute them
+            eng.executeProgram(instructions.toTypedArray())
+        }
+    }
+
+    @Test
+    fun `stack can handle megabytes of values`() {
+        // given a lot of instructions
+        // 32,767 * 4 * 8 = > 1MB of integers. approx more than half of the stack allocation
+        val instructions = (1..Short.MAX_VALUE).map { StoreI(it) }
+
+        // when we execute them
+        eng.executeProgram(instructions.toTypedArray())
+
+        // then the stack contains all of these values
+        // because we are iterating from 1 to MAX_VALUE, none of these
+        // values should be zero
+        repeat((1..Short.MAX_VALUE).count()) {
+            assertThat(eng.context.popInt(), not(equalTo(0)))
+        }
     }
 
 }

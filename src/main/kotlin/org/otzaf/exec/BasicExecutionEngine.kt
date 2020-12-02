@@ -12,7 +12,6 @@ class ExecutionEngineContext {
     // instruction pointer, i.e.
     // where in the program we are.
     var ip = 0
-
     var sp = -1
     var stack = Array<Byte>(2 * MB) { 0 }
 
