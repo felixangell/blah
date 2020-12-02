@@ -1,6 +1,7 @@
 package org.otzaf.exec.instr
 
 import org.otzaf.exec.ExecutionEngineContext
+import kotlin.experimental.and
 
 interface Instruction {
     fun execute(context: ExecutionEngineContext)
@@ -23,6 +24,14 @@ class CmpI : Instruction {
             else -> throw RuntimeException("a is not >, ==, < than b")
         }
         context.pushInt(result)
+    }
+}
+
+class AndI : Instruction {
+    override fun execute(context: ExecutionEngineContext) {
+        val b = context.popInt()
+        val a = context.popInt()
+        context.pushInt(a.toByte().and(b.toByte()).toInt())
     }
 }
 

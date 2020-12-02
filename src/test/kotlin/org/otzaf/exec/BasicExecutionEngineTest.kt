@@ -25,6 +25,23 @@ internal class BasicExecutionEngineTest {
 
     @ParameterizedTest
     @CsvSource(
+        "0,0,0",
+        "0,1,0",
+        "1,0,0",
+        "1,1,1"
+    )
+    fun `and boolean operator`(a: Int, b: Int, expected: Int) {
+        val program = arrayOf(
+            StoreI(a),
+            StoreI(b),
+            AndI()
+        )
+        eng.executeProgram(program)
+        assertThat(eng.context.popInt(), equalTo(expected))
+    }
+
+    @ParameterizedTest
+    @CsvSource(
         "30,8,1",
         "8,30,-1",
         "30,30,0"
