@@ -34,6 +34,20 @@ internal class BasicExecutionEngineTest {
     }
 
     @Test
+    fun `stack values can be stored in registers`() {
+        val program = arrayOf(
+            PushI(15),
+            PushI(12),
+            MulI(),             // stack contains 180 = 15 * 12
+            StoreI(1)    // 180 goes in reg 1
+        )
+        eng.executeProgram(program)
+
+        assertThat(eng.context.loadInt(1), equalTo(180))
+        assertThat("stack should be empty", eng.context.empty())
+    }
+
+    @Test
     fun `an integer can be stored on the stack`() {
         val expected = 5
         eng.execute(PushI(expected))

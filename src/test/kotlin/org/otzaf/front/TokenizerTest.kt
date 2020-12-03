@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test
 internal class TokenizerTest {
     @Test
     fun `skips space after identifier`() {
-        val tokens = Tokenizer("hello ").tokenize()
+        val tokens = Tokenizer("\t\thello ").tokenize()
         assertThat(tokens.first().lexeme, equalTo("hello"))
     }
 
