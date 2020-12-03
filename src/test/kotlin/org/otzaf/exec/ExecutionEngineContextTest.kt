@@ -52,6 +52,24 @@ internal class ExecutionEngineContextTest {
     }
 
     @Test
+    fun `integer pushed to the stack can be popped`() {
+        val expected = 123456
+        ctx.pushInt(expected)
+        assertThat(ctx.popInt(), equalTo(expected))
+    }
+
+    @Test
+    fun `most recent integer is popped`() {
+        // given a stack with stuff on it
+        ctx.pushInt(123456)
+        ctx.pushInt(Int.MAX_VALUE)
+
+        val expected = 222
+        ctx.pushInt(expected)
+        assertThat(ctx.popInt(), equalTo(expected))
+    }
+
+    @Test
     fun `a value pushed to the stack can be popped and the value matches what we pushed`() {
         ctx.push(5.toByte())
         assertThat(5, equalTo(ctx.pop()))

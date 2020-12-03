@@ -37,7 +37,9 @@ class ExecutionEngineContext {
 
     fun popInt(): Int {
         val bytes = ByteArray(INT_SIZE)
-        repeat((1..INT_SIZE).count()) { bytes[it - 1] = pop() }
+        (INT_SIZE - 1 downTo 0).forEach {
+            bytes[it] = pop()
+        }
         return ByteConverter.bytesToInt(bytes)
     }
 

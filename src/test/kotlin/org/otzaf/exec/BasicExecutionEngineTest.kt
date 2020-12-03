@@ -238,11 +238,13 @@ internal class BasicExecutionEngineTest {
 
     @Test
     fun `stack cannot handle many megabytes of values`() {
+        val maxIntCapacity = (eng.context.stack.size / INT_SIZE) + 1
+
         // index oob is thrown
         assertThrows<IndexOutOfBoundsException> {
             // given a lot of instructions
             // (32,767 * 4) * 16 => ~2MB of integers
-            val instructions = (1..(Short.MAX_VALUE * 16)).map { PushI(it) }
+            val instructions = (1..(maxIntCapacity)).map { PushI(it) }
 
             // when we execute them
             eng.executeProgram(instructions.toTypedArray())
