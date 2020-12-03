@@ -53,8 +53,22 @@ class AndI : Instruction {
     }
 }
 
-// store the given integer on the stack
-class StoreI(val value: Int) : Instruction {
+class StoreI(private val index: Int) : Instruction {
+    override fun execute(context: ExecutionEngineContext) {
+        val a = context.popInt()
+        context.storeInt(index, a)
+    }
+}
+
+class LoadI(private val index: Int) : Instruction {
+    override fun execute(context: ExecutionEngineContext) {
+        val a = context.loadInt(index)
+        context.pushInt(a)
+    }
+}
+
+// push the given integer on the stack
+class PushI(private val value: Int) : Instruction {
     override fun execute(context: ExecutionEngineContext) {
         context.pushInt(value)
     }

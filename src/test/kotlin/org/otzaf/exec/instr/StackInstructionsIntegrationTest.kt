@@ -19,7 +19,7 @@ internal class StackInstructionsIntegrationTest {
     fun `stack malformation means that the integer we pushed cannot be read`() {
         // given we push an int value to the stack
         val initialValue = Int.MAX_VALUE - 2
-        StoreI(initialValue).execute(context)
+        PushI(initialValue).execute(context)
 
         // and we malform the stack
         context.push(5.toByte())
@@ -34,7 +34,7 @@ internal class StackInstructionsIntegrationTest {
     @Test
     fun `StoreI pushes a big integer to the stack which can be popped and interpreted as an int`() {
         val expected = Int.MAX_VALUE - 2
-        StoreI(expected).execute(context)
+        PushI(expected).execute(context)
         assertThat(context.popInt(), equalTo(expected))
     }
 }
