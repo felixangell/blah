@@ -53,6 +53,9 @@ class AndI : Instruction {
     }
 }
 
+// ConstI
+// StoreI but with a constant value rather than taking from the stack.
+
 class StoreI(private val index: Int) : Instruction {
     override fun execute(context: ExecutionEngineContext) {
         val a = context.popInt()
