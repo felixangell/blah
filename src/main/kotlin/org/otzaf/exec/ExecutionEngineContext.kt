@@ -1,17 +1,16 @@
 package org.otzaf.exec
 
 import org.otzaf.exec.instr.Instruction
-import java.nio.ByteBuffer
-import java.nio.ByteOrder
 
 const val BYTE = 1
 const val KB = 1024 * BYTE
-const val MB = KB * 1000
-
-const val REGISTER_SIZE = 8
-const val REGISTER_COUNT = 32
+const val MB = KB * 1024
 
 const val INT_SIZE = 4 * BYTE
+const val LONG_SIZE = 8 * BYTE
+
+const val REGISTER_SIZE = LONG_SIZE
+const val REGISTER_COUNT = 32
 
 class ExecutionEngineContext {
     // instruction pointer, i.e.
@@ -37,8 +36,8 @@ class ExecutionEngineContext {
     fun empty(): Boolean = sp == -1
 
     fun popInt(): Int {
-        val bytes = ByteArray(4)
-        repeat((1..4).count()) { it -> bytes[it-1] = pop() }
+        val bytes = ByteArray(INT_SIZE)
+        repeat((1..INT_SIZE).count()) { bytes[it - 1] = pop() }
         return ByteConverter.bytesToInt(bytes)
     }
 
@@ -47,8 +46,8 @@ class ExecutionEngineContext {
     }
 
     fun loadInt(index: Int): Int {
-        val bytes = ByteArray(4)
-        repeat((1..4).count()) { bytes[it] = mem[(index * INT_SIZE)+it] }
+        val bytes = ByteArray(INT_SIZE)
+        repeat((1..INT_SIZE).count()) { bytes[it] = mem[(index * INT_SIZE) + it] }
         return ByteConverter.bytesToInt(bytes)
     }
 
