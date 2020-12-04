@@ -4,5 +4,5 @@ import org.otzaf.exec.instr.Instruction
 
 interface ExecutionEngine {
     fun execute(instr: Instruction)
-    fun executeProgram(instrSet: Array<Instruction>)
+    fun executeProgram(instrSet: List<Instruction>)
 }

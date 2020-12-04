@@ -12,14 +12,14 @@ internal class ExecutionEngineContextTest {
 
     @BeforeEach
     fun setup() {
-        ctx = ExecutionEngineContext()
+        ctx = ExecutionEngineContext(ByteRegisterPool())
     }
 
     @Test
     fun `a value stored in register index 0 can be loaded and is intact`() {
         val expected = 123
-        ctx.storeInt(0, expected)
-        assertThat(ctx.loadInt(0), equalTo(expected))
+        ctx.mem.storeInt(0, expected)
+        assertThat(ctx.mem.loadInt(0), equalTo(expected))
     }
 
     @Test
@@ -27,11 +27,11 @@ internal class ExecutionEngineContextTest {
         val numValues = (REGISTER_COUNT * 2)
 
         repeat((1..numValues).count()) {
-            ctx.storeInt(it, it + 1)
+            ctx.mem.storeInt(it, it + 1)
         }
 
         repeat((1..numValues).count()) {
-            assertThat(ctx.loadInt(it), equalTo(it + 1))
+            assertThat(ctx.mem.loadInt(it), equalTo(it + 1))
         }
     }
 
@@ -42,11 +42,11 @@ internal class ExecutionEngineContextTest {
             val numValues = ((REGISTER_COUNT * REGISTER_SIZE) / INT_SIZE) + 1
 
             repeat((1..numValues).count()) {
-                ctx.storeInt(it, it + 1)
+                ctx.mem.storeInt(it, it + 1)
             }
 
             repeat((1..numValues).count()) {
-                assertThat(ctx.loadInt(it), equalTo(it + 1))
+                assertThat(ctx.mem.loadInt(it), equalTo(it + 1))
             }
         }
     }

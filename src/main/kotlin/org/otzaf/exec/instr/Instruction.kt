@@ -51,6 +51,10 @@ class AndI : Instruction {
         val a = context.popInt()
         context.pushInt(a.toByte().and(b.toByte()).toInt())
     }
+
+    override fun toString(): String {
+        return "andi"
+    }
 }
 
 // ConstI
@@ -59,14 +63,28 @@ class AndI : Instruction {
 class StoreI(private val index: Int) : Instruction {
     override fun execute(context: ExecutionEngineContext) {
         val a = context.popInt()
-        context.storeInt(index, a)
+        context.mem.storeInt(index, a)
+    }
+
+    override fun toString(): String {
+        return "storei $index"
     }
 }
 
 class LoadI(private val index: Int) : Instruction {
     override fun execute(context: ExecutionEngineContext) {
-        val a = context.loadInt(index)
+        val a = context.mem.loadInt(index)
         context.pushInt(a)
+    }
+
+    override fun toString(): String {
+        return "loadi $index"
+    }
+}
+
+class Goto(private val addr: Int) : Instruction {
+    override fun execute(context: ExecutionEngineContext) {
+        context.ip = addr
     }
 }
 
@@ -74,6 +92,10 @@ class LoadI(private val index: Int) : Instruction {
 class PushI(private val value: Int) : Instruction {
     override fun execute(context: ExecutionEngineContext) {
         context.pushInt(value)
+    }
+
+    override fun toString(): String {
+        return "pushi $value"
     }
 }
 
@@ -83,6 +105,10 @@ class AddI : Instruction {
         val b = context.popInt()
         val a = context.popInt()
         context.pushInt(a + b)
+    }
+
+    override fun toString(): String {
+        return "addi"
     }
 }
 

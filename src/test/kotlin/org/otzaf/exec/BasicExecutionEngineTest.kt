@@ -30,12 +30,30 @@ internal class BasicExecutionEngineTest {
 
     @BeforeEach
     fun setup() {
-        eng = BasicExecutionEngine()
+        eng = BasicExecutionEngine(ByteRegisterPool())
+    }
+
+    @Test
+    fun `can jump to another instruction in the code`() {
+        // we throw a stackoverflow!
+        assertThrows<StackOverflow> {
+            // given a program with an infinite loop
+            val program = listOf(
+                PushI(1),
+                PushI(3),
+                PushI(3),
+                PushI(7),
+                Goto(0)
+            )
+
+            // when we execute the program
+            eng.executeProgram(program)
+        }
     }
 
     @Test
     fun `stack values can be stored in registers`() {
-        val program = arrayOf(
+        val program = listOf(
             PushI(15),
             PushI(12),
             MulI(),             // stack contains 180 = 15 * 12
@@ -43,7 +61,7 @@ internal class BasicExecutionEngineTest {
         )
         eng.executeProgram(program)
 
-        assertThat(eng.context.loadInt(1), equalTo(180))
+        assertThat(eng.context.mem.loadInt(1), equalTo(180))
         assertThat("stack should be empty", eng.context.empty())
     }
 
@@ -62,7 +80,7 @@ internal class BasicExecutionEngineTest {
         "1,1,0"
     )
     fun `xor boolean operator`(a: Int, b: Int, expected: Int) {
-        val program = arrayOf(
+        val program = listOf(
             PushI(a),
             PushI(b),
             XorI()
@@ -79,7 +97,7 @@ internal class BasicExecutionEngineTest {
         "1,1,1"
     )
     fun `or boolean operator`(a: Int, b: Int, expected: Int) {
-        val program = arrayOf(
+        val program = listOf(
             PushI(a),
             PushI(b),
             OrI()
@@ -96,7 +114,7 @@ internal class BasicExecutionEngineTest {
         "1,1,1"
     )
     fun `and boolean operator`(a: Int, b: Int, expected: Int) {
-        val program = arrayOf(
+        val program = listOf(
             PushI(a),
             PushI(b),
             AndI()
@@ -112,7 +130,7 @@ internal class BasicExecutionEngineTest {
         "30,30,0"
     )
     fun `greater than instruction pushes true on the stack`(a: Int, b: Int, expected: Int) {
-        val program = arrayOf(
+        val program = listOf(
             PushI(a),
             PushI(b),
             CmpI()
@@ -130,7 +148,7 @@ internal class BasicExecutionEngineTest {
         val b1 = 5
         val b2 = 5
 
-        val program = arrayOf(
+        val program = listOf(
             PushI(a1),
             PushI(a2),
             MulI(), // 6 * 8 = 48
@@ -157,7 +175,7 @@ internal class BasicExecutionEngineTest {
         val a = 8
         val b = 8
 
-        val program: Array<Instruction> = arrayOf(
+        val program = listOf(
             PushI(a),
             PushI(b),
             MulI()
@@ -177,7 +195,7 @@ internal class BasicExecutionEngineTest {
         val a = 8
         val b = 3
 
-        val program: Array<Instruction> = arrayOf(
+        val program = listOf(
             PushI(a),
             PushI(b),
             RemI()
@@ -197,7 +215,7 @@ internal class BasicExecutionEngineTest {
         val a = 8
         val b = 2
 
-        val program: Array<Instruction> = arrayOf(
+        val program = listOf(
             PushI(a),
             PushI(b),
             DivI()
@@ -217,7 +235,7 @@ internal class BasicExecutionEngineTest {
         val a = 9
         val b = 2
 
-        val program: Array<Instruction> = arrayOf(
+        val program = listOf(
             PushI(a),
             PushI(b),
             SubI()
@@ -237,7 +255,7 @@ internal class BasicExecutionEngineTest {
         val a = 5
         val b = 5
 
-        val program: Array<Instruction> = arrayOf(
+        val program = listOf(
             PushI(a),
             PushI(b),
             AddI()
@@ -254,14 +272,14 @@ internal class BasicExecutionEngineTest {
     fun `stack cannot handle many megabytes of values`() {
         val maxIntCapacity = (eng.context.stack.size / INT_SIZE) + 1
 
-        // index oob is thrown
-        assertThrows<IndexOutOfBoundsException> {
+        // stack overflow
+        assertThrows<StackOverflow> {
             // given a lot of instructions
             // (32,767 * 4) * 16 => ~2MB of integers
             val instructions = (1..(maxIntCapacity)).map { PushI(it) }
 
             // when we execute them
-            eng.executeProgram(instructions.toTypedArray())
+            eng.executeProgram(instructions)
         }
     }
 
@@ -272,7 +290,7 @@ internal class BasicExecutionEngineTest {
         val instructions = (1..Short.MAX_VALUE).map { PushI(it) }
 
         // when we execute them
-        eng.executeProgram(instructions.toTypedArray())
+        eng.executeProgram(instructions)
 
         // then the stack contains all of these values
         // because we are iterating from 1 to MAX_VALUE, none of these

@@ -1,6 +1,5 @@
 package org.otzaf.front
 
-import kotlin.math.max
 import kotlin.math.min
 
 data class Token(val lexeme: String, val type: TokenType)

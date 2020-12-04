@@ -6,13 +6,14 @@ import org.hamcrest.Matchers.not
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.otzaf.exec.ExecutionEngineContext
+import org.otzaf.exec.MockRegisterPool
 
 internal class StackInstructionsIntegrationTest {
     lateinit var context: ExecutionEngineContext
 
     @BeforeEach
     fun setup() {
-        context = ExecutionEngineContext()
+        context = ExecutionEngineContext(MockRegisterPool())
     }
 
     @Test
