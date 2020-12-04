@@ -11,8 +11,8 @@ import org.otzaf.exec.MockRegisterPool
 import org.otzaf.ir.*
 
 internal class ByteCodeGeneratorTest {
-    lateinit var regPool: MockRegisterPool
-    lateinit var execEngine: ExecutionEngine
+    private lateinit var regPool: MockRegisterPool
+    private lateinit var execEngine: ExecutionEngine
 
     @BeforeEach
     fun setup() {
@@ -22,14 +22,15 @@ internal class ByteCodeGeneratorTest {
 
     @Test
     fun `a simple arithmetic program can be compiled into bytecode and executed`() {
-        val lval = 15
-        val rval = 30
+        val leftVal = 15
+        val rightVal = 30
+        val expected = leftVal + rightVal
 
         // given a simple program built with the dsl
         val program = compilationUnit {
             block {
-                local("name", IntegerValue(lval))
-                local("another", IntegerValue(rval))
+                local("name", IntegerValue(leftVal))
+                local("another", IntegerValue(rightVal))
 
                 // TODO binary expr can be in the dsl
                 // as can reference
@@ -37,22 +38,20 @@ internal class ByteCodeGeneratorTest {
             }
         }
 
-        // when we generate code for this program
+        // when we run the program
+        runProgram(program)
+
+        // the last register we wrote to contains the
+        // result of the value we expect
+        val actual = regPool.getValueAt(regPool.lastAction())
+        assertThat(actual, equalTo(expected))
+    }
+
+    fun runProgram(program: CompilationUnit) {
         val programInstructions = ByteCodeGenerator().generateCode(program)
-
-        println(programInstructions.joinToString(separator = "\n") { it.toString() })
-
-        // then the program executes without throwing
-        // any errors on the execution engine
+        // println(programInstructions.joinToString(separator = "\n") { it.toString() })
         assertDoesNotThrow {
             execEngine.executeProgram(programInstructions)
         }
-
-        // and the last register we wrote to contains the
-        // result of the value we expect
-        val expected = lval + rval
-        val lastRegEntry = regPool.history.last()
-        val actual = regPool.getValueAt(lastRegEntry)
-        assertThat(actual, equalTo(expected))
     }
 }

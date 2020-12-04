@@ -47,7 +47,7 @@ enum class PoolType {
 typealias PoolReadWriteHistoryItem = Pair<Index, PoolType>
 
 class MockRegisterPool : RegisterPool {
-    val history = mutableListOf<PoolReadWriteHistoryItem>()
+    private val history = mutableListOf<PoolReadWriteHistoryItem>()
     var mem = hashMapOf<Int, Int>()
 
     override fun loadInt(index: Int): Int {
@@ -63,6 +63,9 @@ class MockRegisterPool : RegisterPool {
     fun getValueAt(it: Pair<Index, PoolType>): Int? = when (it.second) {
         PoolType.INT_POOL -> loadInt(it.first)
     }
+
+    // last read or write action
+    fun lastAction(): Pair<Index, PoolType> = history.last()
 }
 
 class ExecutionEngineContext(val mem: RegisterPool) {
