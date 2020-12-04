@@ -2,13 +2,24 @@ package org.otzaf.gen
 
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertDoesNotThrow
 import org.otzaf.exec.BasicExecutionEngine
+import org.otzaf.exec.ExecutionEngine
 import org.otzaf.exec.MockRegisterPool
 import org.otzaf.ir.*
 
 internal class ByteCodeGeneratorTest {
+    lateinit var regPool: MockRegisterPool
+    lateinit var execEngine: ExecutionEngine
+
+    @BeforeEach
+    fun setup() {
+        regPool = MockRegisterPool()
+        execEngine = BasicExecutionEngine(regPool)
+    }
+
     @Test
     fun `a simple arithmetic program can be compiled into bytecode and executed`() {
         val lval = 15
@@ -31,14 +42,14 @@ internal class ByteCodeGeneratorTest {
 
         println(programInstructions.joinToString(separator = "\n") { it.toString() })
 
-        // it executes in the bytecode engine
-        val regPool = MockRegisterPool()
-
-        val execEngine = BasicExecutionEngine(regPool)
+        // then the program executes without throwing
+        // any errors on the execution engine
         assertDoesNotThrow {
             execEngine.executeProgram(programInstructions)
         }
 
+        // and the last register we wrote to contains the
+        // result of the value we expect
         val expected = lval + rval
         val lastRegEntry = regPool.history.last()
         val actual = regPool.getValueAt(lastRegEntry)
